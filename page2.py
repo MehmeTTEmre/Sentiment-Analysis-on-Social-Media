@@ -3,6 +3,8 @@ from tkinter import *
 from tkinter.filedialog import askopenfile
 from tkinter import ttk, filedialog
 from turtle import home
+from datetime import datetime
+import xlsxwriter
 import pandas as pd
 import tweepy
 import re
@@ -134,8 +136,39 @@ def scrape(words, date_since, numtweet):
             txt_file.write(str(count) + "-) " + str(tivit) + "\n")
 
     
-    # we will save our database as a CSV file.
-    #db.to_csv(filename)
+	# Create a workbook and add a worksheet.
+    workbook = xlsxwriter.Workbook('data/TwitterSentimentAnalysis.xlsx')
+    worksheet = workbook.add_worksheet()
+
+	# Add a bold format to use to highlight cells.
+    bold = workbook.add_format({'bold': 1})
+
+	# Adjust the column width.
+    worksheet.set_column(0, 1, 20) 
+    worksheet.set_column(2, 2, 280) 
+	
+	# Write some data headers.
+    worksheet.write('A1', 'ID', bold)
+    worksheet.write('B1', 'Username', bold)
+    worksheet.write('C1', 'Tweet', bold)
+    worksheet.write('D1', 'Sentiment', bold)
+
+	# Start from the first cell below the headers.
+    row = 1
+    col = 0
+
+    for i in array_tweets_id:
+        worksheet.write_string(row, col,str(i))
+        row += 1
+    row = 1
+    for i in array_tweets_username:
+        worksheet.write_string(row, col+1,str(i))
+        row += 1
+    row = 1
+    for i in array_tweets:
+        worksheet.write_string(row, col+2,str(i))
+        row += 1
+    workbook.close()
 
 
 root=tk.Tk()
