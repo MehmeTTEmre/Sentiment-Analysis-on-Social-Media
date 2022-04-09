@@ -1,16 +1,12 @@
 import tkinter as tk
 from tkinter import *
-from tkinter.filedialog import askopenfile
 from tkinter import ttk, filedialog
-import openpyxl
-from turtle import home, width
-from PIL import Image, ImageTk
 import pandas as pd
-import tweepy
-import re
 
 root=tk.Tk()
 root.geometry("1000x600")
+root.minsize(1000,600)
+root.maxsize(1000,600)
 root.configure()
 root.title('Twitter Sentiment Analysis')
 root.iconbitmap(r"image/twitter.ico")
@@ -29,7 +25,7 @@ style = ttk.Style()
 style.theme_use('clam')
 
 # Create a Frame
-frame = Frame(root)
+frame = Frame(root, background="#1DA1F2")
 frame.pack(expand=True, fill=BOTH)
 # Define a function for opening the file
 def open_file():
@@ -77,6 +73,7 @@ root.config(menu=m)
 file_menu = Menu(m, tearoff=False)
 m.add_cascade(label="Open", menu=file_menu)
 file_menu.add_command(label="Open Spreadsheet", command=open_file)
+#file_menu.add_command(label="Open Image", command=open_file)
 
 # Add a Label widget to display the file content
 label = Label(root)
@@ -90,7 +87,7 @@ homepage = Button(root,
                width=46,
                height=1
 )
-homepage.place(x=0, y=541)
+homepage.place(x=0, y=561)
 
 page2 = Button(root, 
                text="Next Page", 
@@ -99,6 +96,6 @@ page2 = Button(root,
                width=45,
                height=1
 )
-page2.place(x=495,y=541)
+page2.place(x=495,y=561)
 
 root.mainloop()

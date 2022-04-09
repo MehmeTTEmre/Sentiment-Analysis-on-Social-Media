@@ -1,14 +1,11 @@
 import tkinter as tk
 from tkinter import *
-from tkinter.filedialog import askopenfile
-from tkinter import ttk, filedialog
-from turtle import home
-from datetime import datetime
 import xlsxwriter
 import pandas as pd
 import tweepy
 import re
-  
+from PIL import ImageTk, Image
+
 
 # function to display data of each tweet
 def printtweetdata(n, ith_tweet):
@@ -40,10 +37,10 @@ def cleantText(text):
 
 # Enter your own credentials obtained
 # from your developer account
-consumer_key = "**************************"
-consumer_secret = "***********************************"
-access_key = "**********************************"
-access_secret = "*************************************"
+consumer_key = "*********************************"
+consumer_secret = "***************************************"
+access_key = "****************************************"
+access_secret = "***********************************"
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_key, access_secret)
 api = tweepy.API(auth)
@@ -105,9 +102,6 @@ def scrape(words, date_since, numtweet):
             array_tweets_id.append(ith_tweet[9])
             array_tweets_username.append(ith_tweet[0])
         
-        # Function call to print tweet data on screen
-        #printtweetdata(i, ith_tweet)
-        #i = i+1
 
     count = 0
     with open("data/uncleaned_tweets.txt", "w", encoding="utf-8", errors="ignore") as txt_file:
@@ -173,7 +167,9 @@ def scrape(words, date_since, numtweet):
 
 root=tk.Tk()
 root.geometry("1000x600")
-root.configure(background="#87F0FC")
+root.minsize(1000,600)
+root.maxsize(1000,600)
+root.configure(background="#1DA1F2")
 root.title('Twitter Sentiment Analysis')
 root.iconbitmap(r"image/twitter.ico")
   
@@ -195,7 +191,7 @@ def submit():
     date_since_var.set("")
     numtweet_var.set("")
     scrape(name, date_since, int(numtweet))
-    print('Scraping has completed!')
+    ticket1_label["text"] = 'Scraping has completed!'
 
 def homePage():
     root.destroy()
@@ -204,12 +200,23 @@ def homePage():
 def nextPage():
     root.destroy()
     import page3
+
+def start_training():
+    import train
+    accuracy_label["text"] = "Accuracy: {:0.2f}".format(train.accr1[1])
+    ticket2_label["text"] = "Training has completed!"
+    graph_img = ImageTk.PhotoImage(Image.open("data/ConfusionMatrix.jpg"))
+    graph_label = Label(image=graph_img)
+    graph_label.place(x=0, y=107)
       
 # creating a label for
 # name using widget Label
-name_label = tk.Label(root, text = 'Twitter Account: ', font=('calibre',10, 'bold'), bg="#87F0FC")
-date_since_label = tk.Label(root, text = 'Since Date: ', font=('calibre',10, 'bold'), bg="#87F0FC")
-numtweet_label = tk.Label(root, text = 'Number of Tweets: ', font=('calibre',10, 'bold'), bg="#87F0FC")
+name_label = tk.Label(root, text = 'Twitter Account: ', font=('calibre',10, 'bold'), bg="#1DA1F2")
+date_since_label = tk.Label(root, text = 'Since Date: ', font=('calibre',10, 'bold'), bg="#1DA1F2")
+numtweet_label = tk.Label(root, text = 'Number of Tweets: ', font=('calibre',10, 'bold'), bg="#1DA1F2")
+ticket1_label = tk.Label(root, text="", font=('calibre',10, 'bold'), bg="#1DA1F2")
+ticket2_label = tk.Label(root, text="", font=('calibre',10, 'bold'), bg="#1DA1F2")
+accuracy_label = tk.Label(root, text="", font=('calibre',25, 'bold'), bg="#1DA1F2")
   
 # creating a entry for input
 # name using widget Entry
@@ -220,6 +227,7 @@ numtweet_entry = tk.Entry(root,textvariable = numtweet_var, font=('calibre',10,'
 # creating a button using the widget
 # Button that will call the submit function
 submit_btn=tk.Button(root,text = 'Submit', command = submit, width=6, height=4, bd=1)
+machine_btn=tk.Button(root,text = 'Start Training', command = start_training, width=10, height=4, bd=1)
   
 # placing the label and entry in
 # the required position using grid
@@ -233,7 +241,15 @@ date_since_entry.grid(row=1,column=1)
 numtweet_label.grid(row=2,column=0)
 numtweet_entry.grid(row=2,column=1)
 
+ticket1_label.grid(row=3, column=1)
+ticket2_label.place(x=600, y=70)
+accuracy_label.place(x=540, y=15)
+
+
+
+
 submit_btn.place(x=380, y=0)
+machine_btn.place(x=922, y=0)
 
 # Button
 homepage = Button(root,
