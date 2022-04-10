@@ -8,12 +8,10 @@ from keras.models import Sequential
 from nltk.tokenize import RegexpTokenizer
 from pandas.core.reshape.reshape import get_dummies
 import numpy as np
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 from PIL import Image
 import matplotlib.pyplot as plt
 from sklearn.metrics import ConfusionMatrixDisplay
-from itertools import cycle
-from sklearn.metrics import roc_curve, auc
 import re
 from sklearn.metrics import confusion_matrix
 import nltk
@@ -134,7 +132,6 @@ y_pred = (y_pred > 0.5)
 #accr1 = model.evaluate(X_train,y_train) #we are starting to test the model here
 accr1 = accuracy_score(y_test, y_pred)
 
-
 real = []
 for i in range(len(y_test)):
   real.append(np.argmax(y_test[i]))
@@ -150,13 +147,14 @@ disp = ConfusionMatrixDisplay(confusion_matrix=CR, display_labels=labels)
 disp = disp.plot(cmap="Blues")
 plt.tick_params(axis=u'both', which=u'both',length=0)
 plt.grid(b=None)
-plt.savefig("data/ConfusionMatrix.jpg")
-image = Image.open("data/ConfusionMatrix.jpg")
+plt.savefig("image/ConfusionMatrix.jpg")
+image = Image.open("image/ConfusionMatrix.jpg")
 new_image = image.resize((500, 450))
-new_image.save("data/ConfusionMatrix.jpg")
+new_image.save("image/ConfusionMatrix.jpg")
 plt.clf()
 
-
+from itertools import cycle
+from sklearn.metrics import roc_curve, auc
 # Compute ROC curve and ROC area for each class
 fpr = dict()
 tpr = dict()
@@ -185,7 +183,7 @@ for i, color in zip(range(y_test.shape[1]), colors):
         fpr[i],
         tpr[i],
         color=color,
-        label="ROC curve of class " + j + "(area = {1:0.2f})".format(i,roc_auc[i])
+        label="ROC curve of class " + j + "(area = {1:0.2f})".format(i,roc_auc[i]),
     )
 
 plt.plot([0, 1], [0, 1], "k--")
@@ -195,8 +193,8 @@ plt.xlabel("False Positive Rate")
 plt.ylabel("True Positive Rate")
 plt.title("Receiver operating characteristic to multiclass")
 plt.legend(loc="lower right")
-plt.savefig("data/ROC.jpg")
-image = Image.open("data/ROC.jpg")
+plt.savefig("image/ROC.jpg")
+image = Image.open("image/ROC.jpg")
 new_image = image.resize((500, 450))
-new_image.save("data/ROC.jpg")
+new_image.save("image/ROC.jpg")
 plt.clf()

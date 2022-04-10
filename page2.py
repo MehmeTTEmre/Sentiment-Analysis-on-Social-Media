@@ -37,10 +37,10 @@ def cleantText(text):
 
 # Enter your own credentials obtained
 # from your developer account
-consumer_key = "*************************************"
-consumer_secret = "*************************************"
-access_key = "**********************************************"
-access_secret = "*************************************"
+consumer_key = "************************************"
+consumer_secret = "************************************"
+access_key = "************************************"
+access_secret = "************************************"
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_key, access_secret)
 api = tweepy.API(auth)
@@ -205,11 +205,11 @@ def start_training():
     import train
     accuracy_label["text"] = "Accuracy: {:0.2f}".format(train.accr1)
     ticket2_label["text"] = "Training has completed!"
-    graph_img = ImageTk.PhotoImage(Image.open("data/ConfusionMatrix.jpg"))
+    graph_img = ImageTk.PhotoImage(Image.open("image/ConfusionMatrix.jpg"))
     graph_label = Label(image=graph_img)
     graph_label.place(x=0, y=107)
 
-    graph2_img = ImageTk.PhotoImage(Image.open("data/ROC.jpg"))
+    graph2_img = ImageTk.PhotoImage(Image.open("image/ROC.jpg"))
     graph2_label = Label(image=graph2_img)
     graph2_label.place(x=500, y=107)
       

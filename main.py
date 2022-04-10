@@ -2,6 +2,7 @@ from tkinter import *
 import tkinter as tk
 from tkinter.font import BOLD
 from PIL import Image, ImageTk
+import webbrowser
 
 #
 root = tk.Tk()
@@ -15,6 +16,23 @@ root.configure(background="#1DA1F2")
 def nextPage():
     root.destroy()
     import page2
+
+def github():
+   webbrowser.open("https://github.com/MehmeTTEmre")
+
+def linkedin():
+   webbrowser.open("https://www.linkedin.com/in/mehmet-emre-şahin-805107199/")
+
+
+github_btn = Image.open("image/github.ico")
+github_btn = ImageTk.PhotoImage(github_btn)
+img_label = Label(image=github_btn, background="#1DA1F2")
+button = Button(root, image=github_btn,command= github,borderwidth=0,background="#1DA1F2",activebackground="#1DA1F2")
+
+linkedin_btn = Image.open("image/linkedin.ico")
+linkedin_btn = ImageTk.PhotoImage(linkedin_btn)
+img_label2 = Label(image=linkedin_btn, background="#1DA1F2")
+button2 = Button(root, image=linkedin_btn,command= linkedin,borderwidth=0,background="#1DA1F2",activebackground="#1DA1F2")
 
 # Logo 
 logo = Image.open("image/Ankara_Üniversitesi_logosu.png")
@@ -33,7 +51,6 @@ title = Label(root,
 )
 
 word = Label(root, 
-              #text="Mehmet Emre Şahin\n Akın Deniz",
               font=("Helvatica", 20),
               justify="center",
               background="#1DA1F2"
@@ -52,7 +69,7 @@ login = Button(root,
 
 logo_label.place(x=350, y=120)
 title.place(x=350, y=30)
-word.place(x=730, y=485)
 login.place(x=0, y=561)
-
+button.place(x=850, y=485)
+button2.place(x=910, y=492)
 root.mainloop()
