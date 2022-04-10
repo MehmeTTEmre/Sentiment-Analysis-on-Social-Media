@@ -8,9 +8,12 @@ from keras.models import Sequential
 from nltk.tokenize import RegexpTokenizer
 from pandas.core.reshape.reshape import get_dummies
 import numpy as np
+from sklearn.metrics import accuracy_score
 from PIL import Image
 import matplotlib.pyplot as plt
 from sklearn.metrics import ConfusionMatrixDisplay
+from itertools import cycle
+from sklearn.metrics import roc_curve, auc
 import re
 from sklearn.metrics import confusion_matrix
 import nltk
@@ -125,10 +128,11 @@ model.summary()
 y = get_dummies(df.Sentiment).values
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 model.fit(X_train, y_train, epochs=10, batch_size=32, verbose=2)
-predictions = model.predict(X_test)
-predictions = (predictions > 0.5)
-[print(X_test_verb.values[i], predictions[i], y_test[i]) for i in range(0, 5)]
-accr1 = model.evaluate(X_train,y_train) #we are starting to test the model here
+y_pred = model.predict(X_test)
+y_pred = (y_pred > 0.5)
+[print(X_test_verb.values[i], y_pred[i], y_test[i]) for i in range(0, 5)]
+#accr1 = model.evaluate(X_train,y_train) #we are starting to test the model here
+accr1 = accuracy_score(y_test, y_pred)
 
 
 real = []
@@ -136,8 +140,8 @@ for i in range(len(y_test)):
   real.append(np.argmax(y_test[i]))
 
 pred = []
-for i in range(len(predictions)):
-  pred.append(np.argmax(predictions[i]))
+for i in range(len(y_pred)):
+  pred.append(np.argmax(y_pred[i]))
 
 
 CR = confusion_matrix(real, pred)
@@ -150,3 +154,49 @@ plt.savefig("data/ConfusionMatrix.jpg")
 image = Image.open("data/ConfusionMatrix.jpg")
 new_image = image.resize((500, 450))
 new_image.save("data/ConfusionMatrix.jpg")
+plt.clf()
+
+
+# Compute ROC curve and ROC area for each class
+fpr = dict()
+tpr = dict()
+roc_auc = dict()
+for i in range(y_test.shape[1]):
+    fpr[i], tpr[i], _ = roc_curve(y_test[:, i], y_pred[:, i])
+    roc_auc[i] = auc(fpr[i], tpr[i])
+
+# Compute micro-average ROC curve and ROC area
+fpr["micro"], tpr["micro"], _ = roc_curve(y_test.ravel(), y_pred.ravel())
+roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
+
+colors = cycle(["red", "blue", "green","yellow","orange"])
+for i, color in zip(range(y_test.shape[1]), colors):
+    if i == 0:
+      j = "sinirli"
+    elif i == 1:
+      j = "korku"
+    elif i == 2:
+      j = "mutlu"
+    elif i == 3:
+      j = "surpriz"
+    else:
+      j = "üzgün"
+    plt.plot(
+        fpr[i],
+        tpr[i],
+        color=color,
+        label="ROC curve of class " + j + "(area = {1:0.2f})".format(i,roc_auc[i])
+    )
+
+plt.plot([0, 1], [0, 1], "k--")
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("Receiver operating characteristic to multiclass")
+plt.legend(loc="lower right")
+plt.savefig("data/ROC.jpg")
+image = Image.open("data/ROC.jpg")
+new_image = image.resize((500, 450))
+new_image.save("data/ROC.jpg")
+plt.clf()
