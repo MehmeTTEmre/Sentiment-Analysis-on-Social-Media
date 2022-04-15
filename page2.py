@@ -31,23 +31,23 @@ def cleantText(text):
     text = text.lstrip("_")
     return text
 
-#def deEmojify(inputString):
-#   return inputString.encode('ascii', 'ignore').decode('ascii')
+def deEmojify(inputString):
+   return inputString.encode('ascii', 'ignore').decode('ascii')
 
 
 # Enter your own credentials obtained
 # from your developer account
-consumer_key = "************************************"
-consumer_secret = "************************************"
-access_key = "************************************"
-access_secret = "************************************"
+consumer_key = "xCoO0ziSsvVeYuF4oZwVaxj63"
+consumer_secret = "q8VN9dRjFzDwqOcay768kkbNqU7m1YRaCSxSVNXUBOLLWkiprj"
+access_key = "876498445594439680-3YqzDA3xOZLPBOvrBLte8vFsB5YdPzj"
+access_secret = "H1g7HSkEcRT6EDlFfbGa7AYSyb4rig9oTl39CeqRvGKsv"
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_key, access_secret)
 api = tweepy.API(auth)
 
 
 def scrape(words, date_since, numtweet):
-    
+
     # Creating DataFrame using pandas
     db = pd.DataFrame(columns=['username', 'description', 'location', 'following', 'followers', 'totaltweets', 'retweetcount', 'text', 'hashtags', 'tweet_id'])
     
@@ -102,33 +102,6 @@ def scrape(words, date_since, numtweet):
             array_tweets_id.append(ith_tweet[9])
             array_tweets_username.append(ith_tweet[0])
         
-
-    count = 0
-    with open("data/uncleaned_tweets.txt", "w", encoding="utf-8", errors="ignore") as txt_file:
-        for tivit in array_tum_tweets:
-            count += 1
-            txt_file.write(str(count) + "-) " + tivit + "\n")
-
-
-
-    count = 0
-    with open("data/tweets.txt", "w", encoding="utf-8", errors="ignore") as txt_file:
-        for tivit in array_tweets:
-            count += 1
-            txt_file.write(str(count) + "-) " + tivit + "\n")
-
-    count = 0
-    with open("data/tweets_id.txt", "w", encoding="utf-8", errors="ignore") as txt_file:
-        for tivit in array_tweets_id:
-            count += 1
-            txt_file.write(str(count) + "-) " + str(tivit) + "\n")
-
-    count = 0
-    with open("data/tweets_username.txt", "w", encoding="utf-8", errors="ignore") as txt_file:
-        for tivit in array_tweets_username:
-            count += 1
-            txt_file.write(str(count) + "-) " + str(tivit) + "\n")
-
     
 	# Create a workbook and add a worksheet.
     workbook = xlsxwriter.Workbook('data/TwitterSentimentAnalysis.xlsx')
@@ -140,6 +113,7 @@ def scrape(words, date_since, numtweet):
 	# Adjust the column width.
     worksheet.set_column(0, 1, 20) 
     worksheet.set_column(2, 2, 280) 
+    worksheet.set_column(3, 3, 10) 
 	
 	# Write some data headers.
     worksheet.write('A1', 'ID', bold)

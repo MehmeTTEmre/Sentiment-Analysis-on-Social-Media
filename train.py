@@ -8,10 +8,14 @@ from keras.models import Sequential
 from nltk.tokenize import RegexpTokenizer
 from pandas.core.reshape.reshape import get_dummies
 import numpy as np
-from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
+from sklearn.metrics import accuracy_score
 from PIL import Image
 import matplotlib.pyplot as plt
 from sklearn.metrics import ConfusionMatrixDisplay
+from openpyxl import load_workbook
+import sqlite3
+from itertools import cycle
+from sklearn.metrics import roc_curve, auc
 import re
 from sklearn.metrics import confusion_matrix
 import nltk
@@ -28,6 +32,9 @@ warnings.filterwarnings("ignore")
 df = pd.read_excel('data/Tweets.xlsx')
 df.rename(columns={"Tweet" : "Text", "Etiket" : "Sentiment"}, inplace = True)
 df = df[["Text", "Sentiment"]]
+
+df2 = pd.read_excel('data/TwitterSentimentAnalysis.xlsx')
+df2 = df2[["Tweet"]]
 
 
 df["Sentiment"][df["Sentiment"]== "kızgın"] = 1
@@ -62,7 +69,7 @@ STOPWORDS = set(stopwords.words('turkish'))
 def cleaning_stopwords(text):
     return " ".join([word for word in str(text).split() if word not in STOPWORDS])
 df['Text'] = df["Text"].apply(lambda text: cleaning_stopwords(text))
-
+df2["Tweet"] = df2["Tweet"].apply(lambda text: cleaning_stopwords(text))
 
 # Cleaning and removing punctuations
 turkish_punctuations = string.punctuation
@@ -71,24 +78,31 @@ def cleaning_punctutations(text):
     translator = str.maketrans("", "", punctuations_list)
     return text.translate(translator)
 df["Text"] = df["Text"].apply(lambda x: cleaning_punctutations(x))
-
+df2["Tweet"] = df2["Tweet"].apply(lambda x: cleaning_punctutations(x))
 
 # Cleaning and removing repeating characters
 def cleaning_repeating_char(text):
     return re.sub(r"(.)\1+", r"\1", text)
 df["Text"] = df["Text"].apply(lambda x: cleaning_repeating_char(x))
-
+df2["Tweet"] = df2["Tweet"].apply(lambda x: cleaning_repeating_char(x))
 
 # Cleaning and removing numeric numbers
 def cleaning_numbers(data):
     return re.sub("[0-9]", "", str(data))
 df["Text"] = df["Text"].apply(lambda x: cleaning_numbers(x))
+df2["Tweet"] = df2["Tweet"].apply(lambda x: cleaning_numbers(x))
 
+wb = load_workbook(filename="data/TwitterSentimentAnalysis.xlsx")
+ws = wb.worksheets[0]
+for i in range(len(df2.Tweet)):
+    ws["C"+str(i+2)] = df2.Tweet[i]
+wb.save("data/TwitterSentimentAnalysis.xlsx")
+wb.close()
 
 # Getting Tokenization of tweet text
 tokenizer = RegexpTokenizer(r"\w+")
 df["Text"] = df["Text"].apply(tokenizer.tokenize)
-
+df2["Tweet"] = df2["Tweet"].apply(tokenizer.tokenize)
 
 # Applying stemming
 st = nltk.PorterStemmer()
@@ -96,7 +110,7 @@ def stemming_on_text(data):
     text = [st.stem(word) for word in data]
     return data
 df["Text"] = df["Text"].apply(lambda x: stemming_on_text(x))
-
+df2["Tweet"] = df2["Tweet"].apply(lambda x: stemming_on_text(x))
 
 # Applying lemmatizer
 lm = nltk.WordNetLemmatizer()
@@ -104,13 +118,19 @@ def lemmatizer_on_text(data):
     text = [lm.lemmatize(word) for word in data]
     return data
 df["Text"] = df["Text"].apply(lambda x: lemmatizer_on_text(x))
-
+df2["Tweet"] = df2["Tweet"].apply(lambda x: lemmatizer_on_text(x))
 
 X_train_verb, X_test_verb, y_train_verb, y_test_verb = train_test_split(df.Text, df.Sentiment, test_size=0.2, random_state=0)
 tokenizer = Tokenizer(num_words=3000, split=",")
 tokenizer.fit_on_texts(df.Text.values)
 sequences = tokenizer.texts_to_sequences(df.Text.values)
 X = pad_sequences(sequences, padding="post")
+
+
+tokenizer = Tokenizer(num_words=3000, split=",")
+tokenizer.fit_on_texts(df2.Tweet.values)
+sequences = tokenizer.texts_to_sequences(df2.Tweet.values)
+X2 = pad_sequences(sequences, padding="post", maxlen=X.shape[1])
 
 
 model = Sequential()
@@ -128,9 +148,48 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 model.fit(X_train, y_train, epochs=10, batch_size=32, verbose=2)
 y_pred = model.predict(X_test)
 y_pred = (y_pred > 0.5)
-[print(X_test_verb.values[i], y_pred[i], y_test[i]) for i in range(0, 5)]
+#[print(X_test_verb.values[i], y_pred[i], y_test[i]) for i in range(len(y_test))]
 #accr1 = model.evaluate(X_train,y_train) #we are starting to test the model here
 accr1 = accuracy_score(y_test, y_pred)
+
+
+predictions = model.predict(X2)
+predictions = (predictions > 0.5)
+[print(df2["Tweet"].values[i], predictions[i]) for i in range(len(predictions))]
+pred = []
+for i in range(len(predictions)):
+  if predictions[i][0] == True:
+    pred.append("Sinirli")
+  elif predictions[i][1] == True:
+    pred.append("Korku")
+  elif predictions[i][2] == True:
+    pred.append("Mutlu")
+  elif predictions[i][3] == True:
+    pred.append("Sürpriz")
+  else:
+    pred.append("Üzgün")
+
+
+wb = load_workbook(filename="data/TwitterSentimentAnalysis.xlsx")
+ws = wb.worksheets[0]
+for i in range(len(predictions)):
+  ws["D"+str(i+2)] = pred[i]
+wb.save("data/TwitterSentimentAnalysis.xlsx")
+wb.close()
+
+db_ex = pd.read_excel('data/TwitterSentimentAnalysis.xlsx')
+db_ex = db_ex[["ID", "Username", "Tweet", "Sentiment"]]
+
+
+con = sqlite3.connect("data/data.db")   
+cursor = con.cursor()
+cursor.execute("CREATE TABLE IF NOT EXISTS Twitter (ID TEXT, Username TEXT, Tweet TEXT, Sentiment TEXT)")
+con.commit()
+for i in range(len(db_ex.ID)):
+    cursor.execute("INSERT INTO Twitter (ID,Username,Tweet, Sentiment) VALUES (?,?,?,?)", (str(db_ex.ID[i]),db_ex.Username[i],db_ex.Tweet[i],db_ex.Sentiment[i]))
+    con.commit()
+con.close()
+
 
 real = []
 for i in range(len(y_test)):
@@ -153,8 +212,7 @@ new_image = image.resize((500, 450))
 new_image.save("image/ConfusionMatrix.jpg")
 plt.clf()
 
-from itertools import cycle
-from sklearn.metrics import roc_curve, auc
+
 # Compute ROC curve and ROC area for each class
 fpr = dict()
 tpr = dict()
@@ -166,7 +224,6 @@ for i in range(y_test.shape[1]):
 # Compute micro-average ROC curve and ROC area
 fpr["micro"], tpr["micro"], _ = roc_curve(y_test.ravel(), y_pred.ravel())
 roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
-
 colors = cycle(["red", "blue", "green","yellow","orange"])
 for i, color in zip(range(y_test.shape[1]), colors):
     if i == 0:

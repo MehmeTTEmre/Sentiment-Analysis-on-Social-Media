@@ -73,7 +73,7 @@ root.config(menu=m)
 file_menu = Menu(m, tearoff=False)
 m.add_cascade(label="Open", menu=file_menu)
 file_menu.add_command(label="Open Spreadsheet", command=open_file)
-#file_menu.add_command(label="Open Image", command=open_file)
+
 
 # Add a Label widget to display the file content
 label = Label(root)
