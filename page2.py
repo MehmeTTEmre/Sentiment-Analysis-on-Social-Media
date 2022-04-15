@@ -37,10 +37,10 @@ def deEmojify(inputString):
 
 # Enter your own credentials obtained
 # from your developer account
-consumer_key = "xCoO0ziSsvVeYuF4oZwVaxj63"
-consumer_secret = "q8VN9dRjFzDwqOcay768kkbNqU7m1YRaCSxSVNXUBOLLWkiprj"
-access_key = "876498445594439680-3YqzDA3xOZLPBOvrBLte8vFsB5YdPzj"
-access_secret = "H1g7HSkEcRT6EDlFfbGa7AYSyb4rig9oTl39CeqRvGKsv"
+consumer_key = "*******************************"
+consumer_secret = "*******************************"
+access_key = "*******************************"
+access_secret = "*******************************"
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_key, access_secret)
 api = tweepy.API(auth)
