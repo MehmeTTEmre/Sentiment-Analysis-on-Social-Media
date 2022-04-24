@@ -139,7 +139,7 @@ def scrape(words, date_since, numtweet):
 
 
 customtkinter.set_appearance_mode("System")
-root=customtkinter.CTk(fg_color="#f0f0f0")
+root=customtkinter.CTk()
 root.geometry("1000x600")
 root.minsize(1000,600)
 root.maxsize(1000,600)
@@ -148,15 +148,21 @@ root.title('Twitter Sentiment Analysis')
 root.iconbitmap(r"image/ico/twitter.ico")
 
 
-img = ImageTk.PhotoImage(Image.open("image/walpaper/analysis.jpg"))
+#img = ImageTk.PhotoImage(Image.open("image/walpaper/analysis.jpg"))
 # Create a Label Widget to display the text or Image
-label = Label(root, image = img)
-label.place(x=0, y=68)
+#label = Label(root, image = img)
+#label.place(x=0, y=68)
 
 # Creating a variable that can be used to store the value of the entry box.
 name_var=tk.StringVar()
 date_since_var=tk.StringVar()
 numtweet_var=tk.StringVar()
+
+frame_1 = customtkinter.CTkFrame(master=root, width=1000, height=90)
+frame_1.place(x=0, y=0)
+
+frame_2 = customtkinter.CTkFrame(master=root, width=1000, height=471)
+frame_2.place(x=0, y=90)
 
 
 def submit():
@@ -168,7 +174,7 @@ def submit():
     numtweet_var.set("")
     scrape(name, date_since, int(numtweet))
     #ticket1_label["text"] = 'Scraping has completed!'
-    machine_btn["state"] = "normal"
+    machine_btn.state = "normal"
 
 
 def homePage():
@@ -185,52 +191,53 @@ def start_training():
     accuracy_label["text"] = "Accuracy: {:0.2f}".format(train.accr1)
     #ticket2_label["text"] = "Training has completed!"
     graph_img = ImageTk.PhotoImage(Image.open("image/analysis/ConfusionMatrix5.jpg"))
-    graph_label = Label(image=graph_img)
-    graph_label.place(x=0, y=68)
+    graph_label = Label(frame_2, image=graph_img)
+    graph_label.place(x=0, y=0)
 
     graph2_img = ImageTk.PhotoImage(Image.open("image/analysis/ROC5.jpg"))
-    graph2_label = Label(image=graph2_img)
-    graph2_label.place(x=500, y=68)
-    label.destroy()
+    graph2_label = Label(frame_2, image=graph2_img)
+    graph2_label.place(x=500, y=0)
+    #label.destroy()
       
 
 # Creating a label for name using widget Label.
-name_label = tk.Label(root, text = 'Twitter Account: ', font=('calibre',10, 'bold'))
-date_since_label = tk.Label(root, text = 'Since Date: ', font=('calibre',10, 'bold'))
-numtweet_label = tk.Label(root, text = 'Number of Tweets: ', font=('calibre',10, 'bold'))
+#name_label = tk.Label(frame_1, text = 'Twitter Account: ', font=('calibre',10, 'bold'))
+#date_since_label = tk.Label(frame_1, text = 'Since Date: ', font=('calibre',10, 'bold'))
+#numtweet_label = tk.Label(frame_1, text = 'Number of Tweets: ', font=('calibre',10, 'bold'))
 #ticket1_label = tk.Label(root, text="", font=('calibre',10, 'bold'))
 #ticket2_label = tk.Label(root, text="", font=('calibre',10, 'bold'))
-accuracy_label = tk.Label(root, text="", font=('calibre',25, 'bold'))
+accuracy_label = tk.Label(frame_1, text="", font=('calibre',25, 'bold'), bg="#2e2e2e", fg="white")
   
 
 # Creating a entry for input name using widget Entry.
-name_entry = tk.Entry(root,textvariable = name_var, font=('calibre',10,'normal'), width=35)
-date_since_entry = tk.Entry(root,textvariable = date_since_var, font=('calibre',10,'normal'), width=35)
-numtweet_entry = tk.Entry(root,textvariable = numtweet_var, font=('calibre',10,'normal'), width=35)
+name_entry = customtkinter.CTkEntry(frame_1,textvariable = name_var, width=350, placeholder_text="Twitter Account", placeholder_text_color="white")
+date_since_entry = customtkinter.CTkEntry(frame_1,textvariable = date_since_var, width=350, placeholder_text="Since Date  (YYYY-MM-DD)", placeholder_text_color="white")
+numtweet_entry = customtkinter.CTkEntry(frame_1,textvariable = numtweet_var, width=350, placeholder_text="Number of Tweets", placeholder_text_color="white")
+
 
 
 # creating a button using the widget
 # Button that will call the submit function
-submit_btn=tk.Button(root,text = 'Submit', command = submit, width=6, height=4, bd=1)
-machine_btn=tk.Button(root,text = 'Start Training', command = start_training, width=10, height=4, bd=1, state="disabled")
+submit_btn=customtkinter.CTkButton(frame_1 ,text = 'Submit', command = submit, width=10, height=90, border_color="gray", fg_color="orange", text_color="black", hover_color="green")   
+machine_btn=customtkinter.CTkButton(frame_1 ,text = 'Start Training', command = start_training, width=10, height=90, state="disabled", fg_color="orange", text_color="black", text_color_disabled="black", hover_color="green")
   
 
 # placing the label and entry in the required position using grid method
-name_label.grid(row=0,column=0)
-name_entry.grid(row=0,column=1)
+#name_label.grid(row=0,column=0)
+name_entry.place(x=0,y=0)
 
-date_since_label.grid(row=1,column=0)
-date_since_entry.grid(row=1,column=1)
+#date_since_label.grid(row=1,column=0)
+date_since_entry.place(x=0,y=30)
 
-numtweet_label.grid(row=2,column=0)
-numtweet_entry.grid(row=2,column=1)
+#numtweet_label.grid(row=2,column=0)
+numtweet_entry.place(x=0,y=60)
 
 #ticket1_label.grid(row=3, column=1)
 #ticket2_label.place(x=600, y=70)
 accuracy_label.place(x=540, y=15)
 
-submit_btn.place(x=380, y=0)
-machine_btn.place(x=922, y=0)
+submit_btn.place(relx=0.35, rely=0.0)
+machine_btn.place(relx=0.9, rely=0.0)
 
 
 # Button

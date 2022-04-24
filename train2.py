@@ -109,7 +109,7 @@ model.summary()
 
 y = get_dummies(df.Sentiment).values
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
-model.fit(X_train, y_train, epochs=7, batch_size=16, verbose=2)
+model.fit(X_train, y_train, epochs=8, batch_size=16, verbose=2)
 y_pred = model.predict(X_test)
 y_pred = (y_pred > 0.5)
 #[print(X_test_verb.values[i], y_pred[i], y_test[i]) for i in range(len(y_test))]
@@ -150,17 +150,5 @@ image = Image.open("image/analysis/ConfusionMatrix2.jpg")
 new_image = image.resize((500, 480))
 new_image.save("image/analysis/ConfusionMatrix2.jpg")
 plt.clf()
-    
-"""
-#Creating PieCart
-labels = ["Positive ["+str(positive)+"%]" ,"Negative ["+str(negative)+"%]"]
-sizes = [positive, negative]
-colors = ["blue","red"]
-patches, texts = plt.pie(sizes,colors=colors, startangle=90)
-plt.style.use("default")
-plt.legend(labels)
-plt.title("Sentiment Analysis Result for keyword= "+keyword+"" )
-plt.axis("equal")
-plt.show()
-"""
+
 

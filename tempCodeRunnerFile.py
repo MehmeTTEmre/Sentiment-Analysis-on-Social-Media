@@ -1,1 +1,1 @@
-import customtkinter
+hover_color="green"

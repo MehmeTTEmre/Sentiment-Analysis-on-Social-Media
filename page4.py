@@ -60,11 +60,11 @@ textEntry = customtkinter.CTkEntry(frame_1, width=840, placeholder_text="Text", 
 textEntry.place(x=50, y=30)
 textEntry.configure(corner_radius=15)
 
-tweetBtn=customtkinter.CTkButton(frame_1,text = 'Submit', command = submit, width=30, height=2, fg_color="orange", text_color_disabled="black", text_color="black", state="disabled")
-tweetBtn.place(relx=0.5, rely=0.6, anchor=tk.CENTER)
+tweetBtn=customtkinter.CTkButton(frame_1,text = 'Submit', command = submit, width=30, height=25, fg_color="orange", text_color_disabled="black", text_color="black", state="disabled", hover_color="green")
+tweetBtn.place(relx=0.45, rely=0.5)
 
-machine_btn=customtkinter.CTkButton(frame_1,text = 'Start Training', command = start_training, width=40, height=20, fg_color="orange", text_color="black")
-machine_btn.place(relx=0.5, rely=0.8, anchor=tk.CENTER)
+machine_btn=customtkinter.CTkButton(frame_1,text = 'Start Training', command = start_training, width=50, height=25, fg_color="orange", text_color="black", hover_color="green")
+machine_btn.place(relx=0.43, rely=0.75)
 
 accuracy_label = tk.Label(frame_1, text="", font=('calibre',20, 'bold'), bg="#2e2e2e", fg="orange")
 accuracy_label.place(x=600, y=85)
