@@ -5,3 +5,7 @@ In this project, I designed a graphical user interface for a twitter account tha
 ```
 pip install -r requirements.txt
 ```
+## Run
+```
+python main.py
+```
