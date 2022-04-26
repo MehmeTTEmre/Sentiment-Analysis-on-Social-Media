@@ -1,0 +1,10 @@
+tweepy
+datetime
+emoji
+sklearn
+nltk
+openpyxl
+pandas
+keras
+matplotlib
+tensorflow
