@@ -28,14 +28,12 @@ nltk.download('stopwords')
 nltk.download('wordnet')
 warnings.filterwarnings("ignore")
 
-
 df = pd.read_excel('data/Tweets_train.xlsx')
 df.rename(columns={"Tweet" : "Text", "Etiket" : "Sentiment"}, inplace = True)
 df = df[["Text", "Sentiment"]]
 
 df2 = pd.read_excel('data/TwitterSentimentAnalysis.xlsx')
 df2 = df2[["Tweet"]]
-
 
 # Changing the value of the column "Sentiment" to 1 if the value is "kızgın".
 df["Sentiment"][df["Sentiment"]== "kızgın"] = 1
@@ -44,14 +42,12 @@ df["Sentiment"][df["Sentiment"]== "mutlu"] = 3
 df["Sentiment"][df["Sentiment"]== "surpriz"] = 4
 df["Sentiment"][df["Sentiment"]== "üzgün"] = 5
 
-
 # Filtering the dataframe by the value of the column "Sentiment" and it is getting the rows that have the value of 1.
 df_angry = df[df["Sentiment"] == 1]
 df_fear = df[df["Sentiment"] == 2]   
 df_happy = df[df["Sentiment"] == 3] 
 df_shocked = df[df["Sentiment"] == 4]  
 df_sad = df[df["Sentiment"] == 5] 
-
 
 # Getting the first 100 rows of the dataframe.
 df_angry = df_angry.iloc[:int(100)]
@@ -60,11 +56,9 @@ df_happy = df_happy.iloc[:int(100)]
 df_shocked = df_shocked.iloc[:int(100)]
 df_sad = df_sad.iloc[:int(100)]
 
-
 # Concatenating the dataframes.
 df = pd.concat([df_angry, df_fear, df_happy, df_shocked, df_sad])
 df["Text"] = df["Text"].str.lower() 
-
 
 # Cleaning and removing stopwords from list
 stop_words = list(stopwords.words('turkish'))
@@ -75,7 +69,6 @@ def cleaning_stopwords(text):
 df['Text'] = df["Text"].apply(lambda text: cleaning_stopwords(text))
 df2["Tweet"] = df2["Tweet"].apply(lambda text: cleaning_stopwords(text))
 
-
 # Cleaning and removing punctuations
 turkish_punctuations = string.punctuation
 punctuations_list = turkish_punctuations
@@ -85,20 +78,17 @@ def cleaning_punctutations(text):
 df["Text"] = df["Text"].apply(lambda x: cleaning_punctutations(x))
 df2["Tweet"] = df2["Tweet"].apply(lambda x: cleaning_punctutations(x))
 
-
 # Cleaning and removing repeating characters
 def cleaning_repeating_char(text):
     return re.sub(r"(.)\1+", r"\1", text)
 df["Text"] = df["Text"].apply(lambda x: cleaning_repeating_char(x))
 df2["Tweet"] = df2["Tweet"].apply(lambda x: cleaning_repeating_char(x))
 
-
 # Cleaning and removing numeric numbers
 def cleaning_numbers(data):
     return re.sub("[0-9]", "", str(data))
 df["Text"] = df["Text"].apply(lambda x: cleaning_numbers(x))
 df2["Tweet"] = df2["Tweet"].apply(lambda x: cleaning_numbers(x))
-
 
 wb = load_workbook(filename="data/TwitterSentimentAnalysis.xlsx")
 ws = wb.worksheets[0]
@@ -107,12 +97,10 @@ for i in range(len(df2.Tweet)):
 wb.save("data/TwitterSentimentAnalysis.xlsx")
 wb.close()
 
-
 # Getting Tokenization of tweet text
 tokenizer = RegexpTokenizer(r"\w+")
 df["Text"] = df["Text"].apply(tokenizer.tokenize)
 df2["Tweet"] = df2["Tweet"].apply(tokenizer.tokenize)
-
 
 # Applying stemming
 st = nltk.PorterStemmer()
@@ -122,7 +110,6 @@ def stemming_on_text(data):
 df["Text"] = df["Text"].apply(lambda x: stemming_on_text(x))
 df2["Tweet"] = df2["Tweet"].apply(lambda x: stemming_on_text(x))
 
-
 # Applying lemmatizer
 lm = nltk.WordNetLemmatizer()
 def lemmatizer_on_text(data):
@@ -131,20 +118,17 @@ def lemmatizer_on_text(data):
 df["Text"] = df["Text"].apply(lambda x: lemmatizer_on_text(x))
 df2["Tweet"] = df2["Tweet"].apply(lambda x: lemmatizer_on_text(x))
 
-
 X_train_verb, X_test_verb, y_train_verb, y_test_verb = train_test_split(df.Text, df.Sentiment, test_size=0.2, random_state=0)
 tokenizer = Tokenizer(num_words=3000, split=",")
 tokenizer.fit_on_texts(df.Text.values)
 sequences = tokenizer.texts_to_sequences(df.Text.values)
 X = pad_sequences(sequences, padding="post")
 
-
 # Getting the 3000 most frequent words in the text.
 tokenizer = Tokenizer(num_words=3000, split=",")
 tokenizer.fit_on_texts(df2.Tweet.values)
 sequences = tokenizer.texts_to_sequences(df2.Tweet.values)
 X2 = pad_sequences(sequences, padding="post", maxlen=X.shape[1])
-
 
 model = Sequential()
 model.add(Embedding(3000, 256, input_length=X.shape[1]))
@@ -155,7 +139,6 @@ model.add(Dense(5, activation="softmax"))
 model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
 model.summary()
 
-
 y = get_dummies(df.Sentiment).values
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 model.fit(X_train, y_train, epochs=10, batch_size=32, verbose=2)
@@ -164,7 +147,6 @@ y_pred = (y_pred > 0.5)
 #[print(X_test_verb.values[i], y_pred[i], y_test[i]) for i in range(len(y_test))]
 #accr1 = model.evaluate(X_train,y_train) #we are starting to test the model here
 accr1 = accuracy_score(y_test, y_pred)
-
 
 predictions = model.predict(X2)
 predictions = (predictions > 0.5)
@@ -182,7 +164,6 @@ for i in range(len(predictions)):
   else:
     pred.append("Üzgün")
 
-
 wb = load_workbook(filename="data/TwitterSentimentAnalysis.xlsx")
 ws = wb.worksheets[0]
 for i in range(len(predictions)):
@@ -190,10 +171,8 @@ for i in range(len(predictions)):
 wb.save("data/TwitterSentimentAnalysis.xlsx")
 wb.close()
 
-
 db_ex = pd.read_excel('data/TwitterSentimentAnalysis.xlsx')
 db_ex = db_ex[["ID", "Username", "Tweet", "Sentiment"]]
-
 
 con = sqlite3.connect("data/data.db")   
 cursor = con.cursor()
@@ -204,7 +183,6 @@ for i in range(len(db_ex.ID)):
     con.commit()
 con.close()
 
-
 real = []
 for i in range(len(y_test)):
   real.append(np.argmax(y_test[i]))
@@ -212,7 +190,6 @@ for i in range(len(y_test)):
 pred = []
 for i in range(len(y_pred)):
   pred.append(np.argmax(y_pred[i]))
-
 
 # Compute Confusion Matrix
 CR = confusion_matrix(real, pred)
@@ -227,7 +204,6 @@ new_image = image.resize((500, 471))
 new_image.save("image/analysis/ConfusionMatrix5.jpg")
 plt.clf()
 
-
 # Compute ROC curve and ROC area for each class
 fpr = dict()
 tpr = dict()
@@ -235,7 +211,6 @@ roc_auc = dict()
 for i in range(y_test.shape[1]):
     fpr[i], tpr[i], _ = roc_curve(y_test[:, i], y_pred[:, i])
     roc_auc[i] = auc(fpr[i], tpr[i])
-
 
 # Compute micro-average ROC curve and ROC area
 fpr["micro"], tpr["micro"], _ = roc_curve(y_test.ravel(), y_pred.ravel())

@@ -7,17 +7,9 @@ from nltk.corpus import stopwords
 from keras.models import Sequential
 from nltk.tokenize import RegexpTokenizer
 from pandas.core.reshape.reshape import get_dummies
-import numpy as np
 from sklearn.metrics import accuracy_score
-from PIL import Image
 import matplotlib.pyplot as plt
-from sklearn.metrics import ConfusionMatrixDisplay
-from openpyxl import load_workbook
-import sqlite3
-from itertools import cycle
-from sklearn.metrics import roc_curve, auc
 import re
-from sklearn.metrics import confusion_matrix
 import nltk
 import string
 import warnings
@@ -54,7 +46,6 @@ STOPWORDS = set(stopwords.words('turkish'))
 def cleaning_stopwords(text):
     return " ".join([word for word in str(text).split() if word not in STOPWORDS])
 df['Text'] = df["Text"].apply(lambda text: cleaning_stopwords(text))
-
 
 # Cleaning and removing punctuations
 turkish_punctuations = string.punctuation
@@ -128,27 +119,3 @@ def predict(tweet):
         return "Negative"
     else:
         return "Pozitive"
-
-
-real = []
-for i in range(len(y_test)):
-  real.append(np.argmax(y_test[i]))
-
-pred = []
-for i in range(len(y_pred)):
-  pred.append(np.argmax(y_pred[i]))
-
-# Compute Confusion Matrix
-CR = confusion_matrix(real, pred)
-labels = ["Positive", "Negative"]
-disp = ConfusionMatrixDisplay(confusion_matrix=CR, display_labels=labels)
-disp = disp.plot(cmap="Blues")
-plt.tick_params(axis=u'both', which=u'both',length=0)
-plt.grid(b=None)
-plt.savefig("image/analysis/ConfusionMatrix2.jpg")
-image = Image.open("image/analysis/ConfusionMatrix2.jpg")
-new_image = image.resize((500, 480))
-new_image.save("image/analysis/ConfusionMatrix2.jpg")
-plt.clf()
-
-

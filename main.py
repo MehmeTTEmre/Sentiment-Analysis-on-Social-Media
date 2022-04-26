@@ -14,7 +14,6 @@ root.minsize(1000,600)
 root.maxsize(1000,600)
 root.configure()
 
-
 def nextPage():
     root.destroy()
     import page2
@@ -24,7 +23,6 @@ def github():
 
 def linkedin():
    webbrowser.open("https://www.linkedin.com/in/mehmet-emre-şahin-805107199/")
-
 
 # Github logo
 github_btn = Image.open("image/ico/github.ico")
@@ -70,14 +68,12 @@ button = Button(root,
                 relief="flat"
 )
 
-
 button2 = Button(root, 
                  image=linkedin_btn,
                  command= linkedin,
                  borderwidth=0,
                  relief="flat"
 )
-
 
 title.place(x=250, y=10)
 logo_label.place(x=50, y=2)
