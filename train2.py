@@ -20,7 +20,7 @@ nltk.download('stopwords')
 nltk.download('wordnet')
 warnings.filterwarnings("ignore")
 
-df = pd.read_excel('data/Tweets_train2.xlsx')
+df = pd.read_excel('data/train/Tweets_train2.xlsx')
 df = df[["Sentiment", "Text"]]
 
 # Changing the value of the column "Sentiment" to 0 if the value is "Negatif".
@@ -31,7 +31,7 @@ df["Sentiment"][df["Sentiment"]== "Pozitif"] = 1
 df_positive = df[df["Sentiment"] == 1]
 df_negative = df[df["Sentiment"] == 0]  
 
-# Getting the first 1000 rows of the dataframe.
+# Getting the first 2000 rows of the dataframe.
 df_negative = df_negative.iloc[:int(2000)]
 df_positive = df_positive.iloc[:int(2000)]
 

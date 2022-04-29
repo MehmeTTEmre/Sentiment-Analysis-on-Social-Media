@@ -38,10 +38,10 @@ def remove_emoji(text):
 
 # Enter your own credentials obtained
 # from your developer account
-consumer_key = "your access key"
-consumer_secret = "your access key"
-access_key = "your access key"
-access_secret = "your access key"
+consumer_key = "your key"
+consumer_secret = "your key"
+access_key = "your key"
+access_secret = "your key"
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_key, access_secret)
 api = tweepy.API(auth)
@@ -53,15 +53,10 @@ def scrape(words, date_since, numtweet):
     new_words = words + " -filter:retweets"
     # We are using .Cursor() to search through twitter for the required tweets.
     # The number of tweets can be restricted using .items(number of tweets)
+    # .Cursor() returns an iterable object. Each item in the iterator has various attributes that you can access to get information about each tweet
     tweets = tweepy.Cursor(api.search_tweets, q=new_words, since=date_since, tweet_mode="extended").items(numtweet)
-    # .Cursor() returns an iterable object. Each item in
-    # the iterator has various attributes that you can access to
-    # get information about each tweet
     list_tweets = [tweet for tweet in tweets]
-    
-    # Counter to maintain Tweet Count
     i = 1
-    
     array_tweets=[]
     array_tweets_id=[]
     array_tweets_username = []
@@ -77,8 +72,7 @@ def scrape(words, date_since, numtweet):
         hashtags = tweet.entities['hashtags']
         tweet_id = tweet.id
 
-        # Retweets can be distinguished by a retweeted_status attribute,
-        # in case it is an invalid reference, except block will be executed
+        # Retweets can be distinguished by a retweeted_status attribute, in case it is an invalid reference, except block will be executed
         try:
             text = tweet.retweeted_status.text
         except AttributeError:
@@ -179,7 +173,6 @@ def start_training():
     import train
     text_label["text"] = ""
     accuracy_label["text"] = "Accuracy: {:0.2f}".format(train.accr1)
-    #ticket2_label["text"] = "Training has completed!"
     graph_img = ImageTk.PhotoImage(Image.open("image/analysis/ConfusionMatrix5.jpg"))
     graph_label = Label(frame_2, image=graph_img)
     graph_label.place(x=0, y=0)
@@ -189,12 +182,6 @@ def start_training():
     graph2_label.place(x=500, y=0)
     label.destroy()
       
-# Creating a label for name using widget Label.
-#name_label = tk.Label(frame_1, text = 'Twitter Account: ', font=('calibre',10, 'bold'))
-#date_since_label = tk.Label(frame_1, text = 'Since Date: ', font=('calibre',10, 'bold'))
-#numtweet_label = tk.Label(frame_1, text = 'Number of Tweets: ', font=('calibre',10, 'bold'))
-#ticket1_label = tk.Label(root, text="", font=('calibre',10, 'bold'))
-#ticket2_label = tk.Label(root, text="", font=('calibre',10, 'bold'))
 accuracy_label = tk.Label(frame_1, text="", font=('calibre',25, 'bold'), bg="#2e2e2e", fg="white")
 text_label = tk.Label(frame_1, text="", font=('calibre',15, 'bold'), bg="#2e2e2e", fg="white")
   
@@ -203,26 +190,15 @@ name_entry = customtkinter.CTkEntry(frame_1,textvariable = name_var, width=350, 
 date_since_entry = customtkinter.CTkEntry(frame_1,textvariable = date_since_var, width=350, placeholder_text="Since Date  (YYYY-MM-DD)", placeholder_text_color="white")
 numtweet_entry = customtkinter.CTkEntry(frame_1,textvariable = numtweet_var, width=350, placeholder_text="Number of Tweets", placeholder_text_color="white")
 
-# creating a button using the widget
-# Button that will call the submit function
+# creating a button using the widget Button that will call the submit function
 submit_btn=customtkinter.CTkButton(frame_1 ,text = 'Submit', command = submit, width=10, height=90, border_color="gray", fg_color="orange", text_color="black", hover_color="green")   
 machine_btn=customtkinter.CTkButton(frame_1 ,text = 'Start Training', command = start_training, width=10, height=90, state="disabled", fg_color="orange", text_color="black", text_color_disabled="black", hover_color="green")
   
-# placing the label and entry in the required position using grid method
-#name_label.grid(row=0,column=0)
 name_entry.place(x=0,y=0)
-
-#date_since_label.grid(row=1,column=0)
 date_since_entry.place(x=0,y=30)
-
-#numtweet_label.grid(row=2,column=0)
 numtweet_entry.place(x=0,y=60)
-
-#ticket1_label.grid(row=3, column=1)
-#ticket2_label.place(x=600, y=70)
 accuracy_label.place(x=540, y=20)
 text_label.place(x=535, y=30)
-
 submit_btn.place(relx=0.35, rely=0.0)
 machine_btn.place(relx=0.9, rely=0.0)
 
@@ -245,5 +221,4 @@ page3 = Button(root,
 )
 page3.place(x=500,y=561)
 
-# performing an infinite loop for the window to display
 root.mainloop()

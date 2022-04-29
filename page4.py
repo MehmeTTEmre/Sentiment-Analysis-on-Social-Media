@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import *
 import customtkinter
-from PIL import ImageTk, Image
 
 customtkinter.set_appearance_mode("System")
 root=customtkinter.CTk()
@@ -17,11 +16,6 @@ frame_1.place(x=30, y=25)
 
 frame_2 = customtkinter.CTkFrame(master=root, width=940, height=360)
 frame_2.place(x=30, y=200)
-
-#img = ImageTk.PhotoImage(Image.open("image/walpaper/1314202.webp"))
-# Create a Label Widget to display the text or Image
-#label = Label(root, image = img, background="#2e2e2e")
-#label.place(x=0, y=0)
 
 def prevPage():
     root.destroy()

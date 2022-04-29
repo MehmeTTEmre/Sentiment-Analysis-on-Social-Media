@@ -28,7 +28,7 @@ nltk.download('stopwords')
 nltk.download('wordnet')
 warnings.filterwarnings("ignore")
 
-df = pd.read_excel('data/Tweets_train.xlsx')
+df = pd.read_excel('data/train/Tweets_train.xlsx')
 df.rename(columns={"Tweet" : "Text", "Etiket" : "Sentiment"}, inplace = True)
 df = df[["Text", "Sentiment"]]
 
@@ -211,6 +211,7 @@ roc_auc = dict()
 for i in range(y_test.shape[1]):
     fpr[i], tpr[i], _ = roc_curve(y_test[:, i], y_pred[:, i])
     roc_auc[i] = auc(fpr[i], tpr[i])
+
 
 # Compute micro-average ROC curve and ROC area
 fpr["micro"], tpr["micro"], _ = roc_curve(y_test.ravel(), y_pred.ravel())

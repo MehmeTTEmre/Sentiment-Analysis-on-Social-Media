@@ -2,6 +2,10 @@ import datetime
 import xlsxwriter
 import tweepy
 import emoji
+import numpy as np
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import roc_curve, auc
+from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -14,6 +18,8 @@ from pandas.core.reshape.reshape import get_dummies
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 from openpyxl import load_workbook
+from sklearn.metrics import ConfusionMatrixDisplay
+from itertools import cycle
 import re
 import nltk
 import string
@@ -25,12 +31,11 @@ nltk.download('stopwords')
 nltk.download('wordnet')
 warnings.filterwarnings("ignore")
 
-# Enter your own credentials obtained
-# from your developer account
-consumer_key = "your access key"
-consumer_secret = "your access key"
-access_key = "your access key"
-access_secret = "your access key"
+# Enter your own credentials obtained from your developer account
+consumer_key = "your key"
+consumer_secret = "your key"
+access_key = "your key"
+access_secret = "your key"
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_key, access_secret)
 api = tweepy.API(auth)
@@ -115,7 +120,7 @@ for tweet in list_tweets:
         array_tweets_id.append(ith_tweet[9])
         array_tweets_username.append(ith_tweet[0])
         
-path = "data/Daily_Tweets/" + date_object.strftime("%A") + ".xlsx"
+path = "data/daily_tweets/" + date_object.strftime("%A") + "/" + date_object.strftime("%A") + ".xlsx"
 # Create a workbook and add a worksheet.
 workbook = xlsxwriter.Workbook(path)
 worksheet = workbook.add_worksheet()
@@ -151,7 +156,7 @@ for i in array_tweets:
     row += 1
 workbook.close()
 
-df = pd.read_excel('data/Tweets_train2.xlsx')
+df = pd.read_excel('data/train/Tweets_train2.xlsx')
 df = df[["Sentiment", "Text"]]
 
 # Changing the value of the column "Sentiment" to 0 if the value is "Negatif".
@@ -275,3 +280,71 @@ for i in range(len(predictions)):
   ws["D"+str(i+2)] = pred[i]
 wb.save(path)
 wb.close()
+
+real = []
+for i in range(len(y_test)):
+  real.append(np.argmax(y_test[i]))
+
+pred = []
+for i in range(len(y_pred)):
+  pred.append(np.argmax(y_pred[i]))
+
+# Compute Confusion Matrix
+CR = confusion_matrix(real, pred)
+labels = ["Pozitive", "Negative"]
+disp = ConfusionMatrixDisplay(confusion_matrix=CR, display_labels=labels)
+disp = disp.plot(cmap="Blues")
+plt.tick_params(axis=u'both', which=u'both',length=0)
+plt.grid(b=None)
+plt.savefig(path)
+plt.clf()
+
+# Compute ROC curve and ROC area for each class
+fpr = dict()
+tpr = dict()
+roc_auc = dict()
+for i in range(y_test.shape[1]):
+    fpr[i], tpr[i], _ = roc_curve(y_test[:, i], y_pred[:, i])
+    roc_auc[i] = auc(fpr[i], tpr[i])
+
+positive = 0
+negative = 0
+# Compute micro-average ROC curve and ROC area
+fpr["micro"], tpr["micro"], _ = roc_curve(y_test.ravel(), y_pred.ravel())
+roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
+colors = cycle(["red", "blue", "green","yellow","orange"])
+for i, color in zip(range(y_test.shape[1]), colors):
+    if i == 0:
+        j = "Negative"
+        negative += 1
+    else:
+        j = "Pozitive"
+        positive += 1
+    plt.plot(
+        fpr[i],
+        tpr[i],
+        color=color,
+        label="ROC curve of class " + j + "(area = {1:0.2f})".format(i,roc_auc[i]),
+    )
+
+plt.plot([0, 1], [0, 1], "k--")
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("Receiver operating characteristic to multiclass")
+plt.legend(loc="lower right")
+plt.savefig(path)
+plt.clf()
+
+
+labels=["[positive]", "[negative]"]
+sizes=[positive,negative]
+colors=['yellowgreen',"gold","red"]
+chart=plt.pie(sizes,labels=labels, startangle=90, autopct='%.2f%%',shadow=True)
+plt.title("[How people are reacting on {} by analysing tweets]".format("Infosys"))
+plt.axis("equal")
+plt.tight_layout()
+plt.savefig(path)
+plt.show()
+plt.clf()

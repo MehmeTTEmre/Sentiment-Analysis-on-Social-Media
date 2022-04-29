@@ -15,8 +15,8 @@ root.maxsize(1000,600)
 root.configure()
 
 def nextPage():
-    root.destroy()
-    import page2
+   root.destroy()
+   import page2
 
 def github():
    webbrowser.open("https://github.com/MehmeTTEmre")
@@ -46,10 +46,10 @@ label.place(x=0, y=70)
 
 # Title
 title = Label(root, 
-              text="Twitter Sentiment Analysis",
-              font=("Helvatica", 30, BOLD),
-              justify="center",
-              bg="#f0f0f0"
+            text="Twitter Sentiment Analysis",
+            font=("Helvatica", 30, BOLD),
+            justify="center",
+            bg="#f0f0f0"
 )
 
 # Button
@@ -62,17 +62,17 @@ login = Button(root,
 )
 
 button = Button(root, 
-                image=github_btn,
-                command=github,
-                borderwidth=0,
-                relief="flat"
+               image=github_btn,
+               command=github,
+               borderwidth=0,
+               relief="flat"
 )
 
 button2 = Button(root, 
-                 image=linkedin_btn,
-                 command= linkedin,
-                 borderwidth=0,
-                 relief="flat"
+               image=linkedin_btn,
+               command= linkedin,
+               borderwidth=0,
+               relief="flat"
 )
 
 title.place(x=250, y=10)
