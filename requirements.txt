@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 tweepy
 datetime
 emoji
@@ -8,15 +7,3 @@ openpyxl
 pandas
 keras
 matplotlib
-=======
-tweepy
-datetime
-emoji
-sklearn
-nltk
-openpyxl
-pandas
-keras
-matplotlib
->>>>>>> 4ed188825b643d685c689c64ce04bb9b9de1353b
-tensorflow
