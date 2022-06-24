@@ -29,6 +29,13 @@ On the 3rd page, we show the data we have taken and trained with machine learnin
 
 ![5](https://user-images.githubusercontent.com/61835738/175536877-71889c82-92b0-469b-bfe0-9344e73a044d.PNG)
 
+## Fourth Page
+
+On the 4th page, the sentences entered randomly are classified as positive or negative.
+
+![6](https://user-images.githubusercontent.com/61835738/175537247-9dfe7d5a-0c64-4370-8e4b-38ac6fbad19b.PNG)
+
+![7](https://user-images.githubusercontent.com/61835738/175537263-f12db8c8-1731-49ff-83c7-9b6f107e099c.PNG)
 
 
 
