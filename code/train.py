@@ -106,7 +106,7 @@ df2["Tweet"] = df2["Tweet"].apply(tokenizer.tokenize)
 st = nltk.PorterStemmer()
 def stemming_on_text(data):
     text = [st.stem(word) for word in data]
-    return data
+    return text
 df["Text"] = df["Text"].apply(lambda x: stemming_on_text(x))
 df2["Tweet"] = df2["Tweet"].apply(lambda x: stemming_on_text(x))
 
@@ -114,7 +114,7 @@ df2["Tweet"] = df2["Tweet"].apply(lambda x: stemming_on_text(x))
 lm = nltk.WordNetLemmatizer()
 def lemmatizer_on_text(data):
     text = [lm.lemmatize(word) for word in data]
-    return data
+    return text
 df["Text"] = df["Text"].apply(lambda x: lemmatizer_on_text(x))
 df2["Tweet"] = df2["Tweet"].apply(lambda x: lemmatizer_on_text(x))
 
@@ -144,13 +144,11 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 model.fit(X_train, y_train, epochs=10, batch_size=32, verbose=2)
 y_pred = model.predict(X_test)
 y_pred = (y_pred > 0.5)
-#[print(X_test_verb.values[i], y_pred[i], y_test[i]) for i in range(len(y_test))]
-#accr1 = model.evaluate(X_train,y_train) #we are starting to test the model here
 accr1 = accuracy_score(y_test, y_pred)
 
 predictions = model.predict(X2)
 predictions = (predictions > 0.5)
-[print(df2["Tweet"].values[i], predictions[i]) for i in range(len(predictions))]
+
 pred = []
 for i in range(len(predictions)):
   if predictions[i][0] == True:

@@ -262,7 +262,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 model.fit(X_train, y_train, epochs=8, batch_size=32, verbose=2)
 y_pred = model.predict(X_test)
 y_pred = (y_pred > 0.5)
-
 accr1 = accuracy_score(y_test, y_pred)
 
 predictions = model.predict(X2)

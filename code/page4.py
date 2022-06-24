@@ -72,18 +72,9 @@ homepage = Button(root,
                text="Homepage", 
                font= ("Times bold", 14),
                command=homePage,
-               width=46,
+               width=91,
                height=1
 )
 homepage.place(x=0, y=561)
-
-page2 = Button(root, 
-               text="Prev Page", 
-               font = ("Times bold", 14),           
-               command=prevPage,
-               width=45,
-               height=1
-)
-page2.place(x=500,y=561)
 
 root.mainloop()

@@ -73,14 +73,14 @@ df["Text"] = df["Text"].apply(tokenizer.tokenize)
 st = nltk.PorterStemmer()
 def stemming_on_text(data):
     text = [st.stem(word) for word in data]
-    return data
+    return text
 df["Text"] = df["Text"].apply(lambda x: stemming_on_text(x))
 
 # Applying lemmatizer
 lm = nltk.WordNetLemmatizer()
 def lemmatizer_on_text(data):
     text = [lm.lemmatize(word) for word in data]
-    return data
+    return text
 df["Text"] = df["Text"].apply(lambda x: lemmatizer_on_text(x))
 
 # Getting the 3000 most frequent words in the text.
@@ -100,11 +100,9 @@ model.summary()
 
 y = get_dummies(df.Sentiment).values
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
-model.fit(X_train, y_train, epochs=8, batch_size=16, verbose=2)
+model.fit(X_train, y_train, epochs=8, batch_size=32, verbose=2)
 y_pred = model.predict(X_test)
 y_pred = (y_pred > 0.5)
-#[print(X_test_verb.values[i], y_pred[i], y_test[i]) for i in range(len(y_test))]
-#accr1 = model.evaluate(X_train,y_train) #we are starting to test the model here
 accr1 = accuracy_score(y_test, y_pred)
 print(accr1)
 
