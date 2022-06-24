@@ -11,4 +11,5 @@ python code/main.py
 ```
 ## First Page
 Since I analyzed my university's twitter account, I put a photo of my university on the login page.
+
 ![1](https://user-images.githubusercontent.com/61835738/175532808-f443ffe1-87b0-4ed8-a719-7202378de6f1.PNG)
