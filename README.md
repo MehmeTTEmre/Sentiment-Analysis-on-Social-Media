@@ -20,3 +20,15 @@ On page 2, the data belonging to the twitter account that we want to analyze is 
 ![2](https://user-images.githubusercontent.com/61835738/175536295-1f6a49d0-d4f0-447d-abb1-e70f4c480e34.PNG)
 
 ![3](https://user-images.githubusercontent.com/61835738/175536398-40717cd1-1179-4163-b4a1-b80f3f563e58.PNG)
+
+## Third Page
+
+On the 3rd page, we show the data we have taken and trained with machine learning with an excel table
+
+![4](https://user-images.githubusercontent.com/61835738/175536868-75037919-6e95-4ba6-baae-b563bb8e7b8b.PNG)
+
+![5](https://user-images.githubusercontent.com/61835738/175536877-71889c82-92b0-469b-bfe0-9344e73a044d.PNG)
+
+
+
+
